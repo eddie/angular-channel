@@ -70,3 +70,10 @@ angular.module('myApp.view1', ['ngRoute', 'myApp.security'])
     });
 });
 ```
+
+
+# Thanks :)
+
+Based on the work of [Eric Burley](https://eburley.github.io/2013/01/31/angularjs-watch-pub-sub-best-practices.html) and [Jim Lavin](http://codingsmackdown.tv/blog/2013/04/29/hailing-all-frequencies-communicating-in-angularjs-with-the-pubsub-design-pattern/).
+
+Initial Gruntfile.js borrowed from [ngStorage](https://github.com/gsklee/ngStorage) :)

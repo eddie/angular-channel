@@ -1,17 +1,20 @@
 {
   "name": "angular-channel",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "authors": [
     "Eddie Blundell <eblundell@gmail.com>"
   ],
   "description": "Helper to create pub/sub channels in AngularJS",
-  "main": "channel.js",
+  "main": "./channel.js",
   "keywords": [
     "angular",
     "channel"
   ],
   "dependencies": {
     "angular": ">= 1.2.*"
+  },
+  "devDependencies": {
+    "angular-mocks": ">=1.0.8"
   },
   "license": "MIT",
   "homepage": "http://mouki.io",
