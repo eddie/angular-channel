@@ -16,6 +16,7 @@ angular.module('myApp.security', ['mouki.channel'])
     // Return an object that has the method logout and onLogout
     return serviceChannel.build(['logout']);
   });
+```
 
 ## Create a custom event channel service
 
