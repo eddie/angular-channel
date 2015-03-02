@@ -1,24 +1,30 @@
 
 # Angular Channels
 
-This is very much a proof of concept/work in progress.
-
-TODO:
-
-- [ ] Examples
-- [ ] Add tests
-- [ ] ...
-
+This is very much a proof of concept/work in progress and could do with improvements. 
 
 # Example Usage
 
-## Create your own channel service
+## Create an event channel service
 
 ```javascript
 angular.module('myApp.security', ['mouki.channel'])
   .service('SecurityChannel', function($rootScope, EventChannel) {
 
-    var serviceChannel = EventChannel.create("SecurityChannel");
+    var serviceChannel = new EventChannel("SecurityChannel");
+    
+    // Return an object that has the method logout and onLogout
+    return serviceChannel.build(['logout']);
+  });
+```
+
+## Create a custom event channel service
+
+```javascript
+angular.module('myApp.security', ['mouki.channel'])
+  .service('SecurityChannel', function($rootScope, EventChannel) {
+
+    var serviceChannel = new EventChannel("SecurityChannel");
     var _LOGOUT_EVENT_ = 'logout';
 
     return {
@@ -62,21 +68,5 @@ angular.module('myApp.view1', ['ngRoute', 'myApp.security'])
       $log.debug("Removing handler");
       onLogoutCleanup();
     });
-});
-```
-
-
-# Summary and Future improvements
-
-So this implementation is a little messy, and could do with some improvements. I would like to move more of the setup into create but I wonder if this could lead us back to the initial problem and create a confusing flow.
-
-I imagine the future channel setup could eventually look like this:
-
-```javascript
-
-angular.module('myApp.security', ['ng.channel'])
-  .service('SecurityChannel', function($rootScope, EventChannel) {
-
-    return EventChannel.create("SecurityChannel", ["onLogout"]);
 });
 ```
