@@ -2,36 +2,71 @@
 
 angular.module('mouki.channel', [])
 
-  .factory('EventChannel', function($rootScope, $log) {
+    .factory('EventChannel', function($rootScope, $log) {
 
-    var createChannel = function(name) {
+        function validChannelKey(key) {
+            if (typeof key !== 'string' ||
+                (typeof key === 'string' && key.length === 0)){
+                return false;
+            }
+            return true;
+        }
 
-      var getEventKey = function(eventName) {
-        return "CHANNEL:"+ name + ":" + eventName;
-      }
+        function onKey(string) {
+            return 'on' + string.charAt(0).toUpperCase() + string.slice(1);
+        }
 
-      var emit = function(event, data) {
-        $rootScope.$broadcast(getEventKey(event), data);
-      };
+        var Channel = function(channelName) {
+            if(!validChannelKey(channelName)) {
+                throw new Error('Channel: invalid channelName');
+            }
 
-      var register = function(scope, event, handler) {
+            this.name = channelName;
+        };
 
-        return scope.$on(getEventKey(event), function(event, args){
-          try {
-            handler(args);
-          } catch(e) {
-            $log.error('Channel:' + name +' event threw an error' + e);
-          }
-        });
-      };
+        Channel.prototype.getEventKey = function(eventName) {
+            if(!validChannelKey(eventName)){
+                throw new Error('Channel:'+ this.name +' invalid eventName');
+            }
+            return 'CHANNEL:'+ this.name + ':' + eventName;
+        };
 
-      return {
-        emit: emit,
-        register: register
-      };
-    };
+        Channel.prototype.emit = function(event, data) {
+            $rootScope.$broadcast(this.getEventKey(event), data);
+        };
 
-    return {
-      create: createChannel
-    }
-  });
+        Channel.prototype.register = function(scope, eventName, handler) {
+            var self = this;
+
+            return scope.$on(this.getEventKey(eventName), function(event, args){
+                try {
+                    handler(args);
+                } catch(e) {
+                    $log.error('Channel:' + self.name +' event threw an error' + e);
+                }
+            });
+        };
+
+        // Build an object that exposes a public API for the channel
+        // Events should be an array of strings containing event names
+
+        Channel.prototype.build = function(events) {
+            var obj = {};
+            var self = this;
+
+            angular.forEach(events, function (event) {
+                obj[event] = function (data) {
+                    self.emit(event, data);
+                };
+
+                obj[onKey(event)] = function ($scope, handler) {
+                    self.register($scope, event, handler);
+                };
+            });
+
+            return obj;
+        };
+
+        return Channel;
+    });
+
